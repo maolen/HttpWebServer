@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 
@@ -18,12 +19,16 @@ namespace HttpWebServer
 
                 // Получить сам запрос, можно его проанализировать
                 var request = context.Request;
+
+                var searchingFileUri = request.RawUrl.Remove('/');
+
                 var response = context.Response;
 
                 // Не только текст, фото, видео, т.е. массив байтов
-                var responseText = "<html><head><meta charset='utf8'></head><body>Server Response</body></html>";
+                var responseText = File.ReadAllText(searchingFileUri);
                 var bytes = System.Text.Encoding.UTF8.GetBytes(responseText);
                 response.OutputStream.Write(bytes, 0, bytes.Length);
+                response.Close();
             }
         }
     }
